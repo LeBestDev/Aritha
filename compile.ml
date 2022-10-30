@@ -254,8 +254,9 @@ let compile_code a =
   Buffer.contents code
 
 (*Fonction qui écrit le code assembleur dans un fichier*)
-let affiche_code code = 
-  let oc = open_out "code.s" in
+let affiche_code nom_fichier code =
+  let nom = String.sub nom_fichier 0 (String.length nom_fichier - 4) in
+  let oc = open_out (nom^".s") in
   (* clear code.s*)
   output_string oc "";
   output_string oc code;
