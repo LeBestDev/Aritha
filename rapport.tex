@@ -1,0 +1,46 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+ 
+\lstset{language=caml}
+\title{Rapport Projet Prog}
+\author{Raphael Giraud}
+\date{October 2022}
+
+\begin{document}
+
+\maketitle
+
+\section{Lexer et Parser}
+Pour le lexer, j'ai utilisé la librairie Ocamllex. J'ai commencé par créer un fichier lexer.mll qui contient les règles de lexing.
+Afin de pouvoir interpréter toutes les manières d'écrire un flotant ("1.0", ".0" ou "1."), J'interprette les flotants de deux manières différentes :
+\begin{lstlisting}
+    |  ['0'-'9']+ '.' ['0'-'9']* as lxm { FLOAT(float_of_string lxm) }
+    |'.' ['0'-'9']+ as lxm { FLOAT(float_of_string lxm) }
+\end{lstlisting}
+Je fais la même chose pour les entiers negatifs et positifs.:
+\begin{lstlisting}
+    |  '-' ['0'-'9']+ as lxm { INT(int_of_string lxm) }
+    |  ['0'-'9']+ as lxm { INT(int_of_string lxm) }
+\end{lstlisting}
+Pour le Parser, j'ai utilisé la librairie Ocamlyacc. J'ai commencé par créer un fichier parser.mly qui contient les règles de parsing.
+En parralèle, j'ai créé un fichier asyntax.ml qui contient le type asyn et les fonctions de manipulation de l'arbre syntaxique abstrait. Le type asyn me permet de créer un ASB. Il contient les types suivants :
+\begin{lstlisting}
+type asyn =
+    | Int of int
+    | Float of float
+    | Add of asyn * asyn
+    | Addf of asyn * asyn
+    | Sub of asyn * asyn
+    | Subf of asyn * asyn
+    | Mul of asyn * asyn
+    | Mulf of asyn * asyn
+    | Div of asyn * asyn
+    | Mod of asyn * asyn
+    | Inttype of asyn
+    | Floattype of asyn
+\end{lstlisting}
+\section{compilation}
+Pour la compilation en assembleur, Je n'ai pas utilisé module X86\_64. J'ai tout simplement utilisé un Buffer à la place pour stocker le code assembleur.
+J'alimente ainsi le buffer récursivement en faisant un parcours en largeur de l'Ast.
+\end{document}
